@@ -70,6 +70,8 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    'allauth.socialaccount.providers.github',
+    "sorl.thumbnail", # 显示用户头像
     "django_celery_beat",
 ]
 
@@ -283,6 +285,18 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_ADAPTER = "app01.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "app01.users.adapters.SocialAccountAdapter"
+
+SITE_ID = 1
+
+SOCIALACCOUNT_PROVIDERS = {
+    'Github': {
+        'APP': {
+            'client_id': 'Iv1.ade2c750a01f2be5',
+            'secret': '2f8b35db01876453bcb46583624e63625df6ed88',
+            'key': ''
+        }
+    }
+}
 # django-compressor
 # ------------------------------------------------------------------------------
 # https://django-compressor.readthedocs.io/en/latest/quickstart/#installation
