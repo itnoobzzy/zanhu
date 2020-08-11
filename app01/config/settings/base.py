@@ -76,7 +76,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "app01.users.apps.UsersConfig",
+    "users.apps.UsersConfig",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -97,7 +97,7 @@ AUTHENTICATION_BACKENDS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "users:redirect"
+LOGIN_REDIRECT_URL = "account_logout"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "account_login"
 
@@ -291,8 +291,8 @@ SITE_ID = 1
 SOCIALACCOUNT_PROVIDERS = {
     'Github': {
         'APP': {
-            'client_id': 'Iv1.ade2c750a01f2be5',
-            'secret': '2f8b35db01876453bcb46583624e63625df6ed88',
+            'client_id': '061c5868b170f4b53a1f',
+            'secret': 'a8317d9f504144093dd574d6a89cc47788625e20',
             'key': ''
         }
     }
