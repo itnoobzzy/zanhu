@@ -1,24 +1,28 @@
-import pytest
-from django.urls import resolve, reverse
-
-from app01.users.models import User
-
-pytestmark = pytest.mark.django_db
-
-
-def test_detail(user: User):
-    assert (
-        reverse("users:detail", kwargs={"username": user.username})
-        == f"/users/{user.username}/"
-    )
-    assert resolve(f"/users/{user.username}/").view_name == "users:detail"
+#!/usr/bin/python3
+# -*- coding:utf-8 -*-
+# __author__ = 'zzy'
+from django.urls import reverse, resolve
+from test_plus.test import TestCase
 
 
-def test_update():
-    assert reverse("users:update") == "/users/~update/"
-    assert resolve("/users/~update/").view_name == "users:update"
+class TestUserURLs(TestCase):
+    """用户 """
 
+    def setUp(self) -> None:
+        self.user = self.make_user()
 
-def test_redirect():
-    assert reverse("users:redirect") == "/users/~redirect/"
-    assert resolve("/users/~redirect/").view_name == "users:redirect"
+    def test_detail_reverse(self):
+        """正向解析用户详情url"""
+        self.assertEqual(reverse('users:detail', kwargs={'username': 'testuser'}), '/users/testuser/')
+
+    def test_detail_resolve(self):
+        """反向解析用户详情url"""
+        self.assertEqual(resolve('/users/testuser/').view_name, 'users:detail')
+
+    def test_update_reverse(self):
+        """正向解析用户更新url"""
+        self.assertEqual(reverse('users:update'), '/users/update/')
+
+    def test_update_resoleve(self):
+        """反向解析用户更新url"""
+        self.assertEqual(resolve('/users/update/').view_name, 'users:update')
