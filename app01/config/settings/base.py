@@ -76,7 +76,8 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "users.apps.UsersConfig",
+    "app01.users.apps.UsersConfig",
+    "app01.news.apps.NewsConfig"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

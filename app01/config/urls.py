@@ -2,17 +2,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
 from django.views import defaults as default_views
-from django.views.generic import TemplateView
+
+from app01.news.views import NewsListView
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
-    path(
-        "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
-    ),
+    path("", NewsListView.as_view(), name="home"),
+
     # 用户管理
     path("users/", include("app01.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
+
+    # 开发的应用
+    path('news/', include('news.urls', namespace='news'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
