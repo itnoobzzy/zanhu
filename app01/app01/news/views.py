@@ -43,3 +43,55 @@ def post_news(request):
         return HttpResponse(html)
     else:
         return HttpResponseBadRequest("内容为空！")
+
+
+@login_required
+@ajax_required
+@require_http_methods(["POST"])
+def like(request):
+    """点赞， AJAX POST请求"""
+    news_id = request.POST['news']
+    news = News.objects.get(pk=news_id)
+    # 取消或者添加赞
+    news.switch_like(request.user)
+    # 返回赞的数量
+    return JsonResponse({'likes': news.count_likers()})
+
+
+@login_required
+@ajax_required
+@require_http_methods(["GET"])
+def get_thread(request):
+    """
+    返回动态的评论,AJAX GET请求
+    1.
+    """
+    news_id = request.GET['news']
+    news = News.objects.select_related('user').get(pk=news_id)
+    news_html = render_to_string("news/news_single.html", {"news": news})
+    thread_html = render_to_string("news/news_thread.html", {"thread": news.get_thread()})
+    return JsonResponse({
+        "uuid": news_id,
+        "news": news_html,
+        "thread": thread_html,
+    })
+
+
+@login_required
+@ajax_required
+@require_http_methods(["POST"])
+def post_comment(request):
+    """
+    发布评论， AJAX POST 请求
+    1. 获取评论的动态id,评论内容
+    2. 使用News模型类的reply_this方法更新评论
+    3. 返回评论数量
+    """
+    post = request.POST['reply'].strip()
+    parent_id = request.POST['parent']
+    parent = News.objects.get(pk=parent_id)
+    if post:
+        parent.reply_this(request.user, post)
+        return JsonResponse({'comments': parent.comment_count()})
+    else:
+        return HttpResponseBadRequest("内容不能为空")
