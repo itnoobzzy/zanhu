@@ -18,8 +18,8 @@
                 {% for article in articles %}
                     <!-- Blog Post -->
                     <div class="card mb-4">
-                        {% thumbnail article.image "600x200" as im %}
-                            <img src="{{ im.url }}" alt="文章图片" class="card-img-top">
+                        {% thumbnail article.image "900x500" as im %}
+                            <img src="{{ im.url }}" alt="文章图片" width="{{ im.width }}" height="{{ im.height }}" class="card-img-top">
                             {% empty %}
                             <img class="card-img-top" src="http://placehold.it/1920x1080" alt="图片大小">
                         {% endthumbnail %}
