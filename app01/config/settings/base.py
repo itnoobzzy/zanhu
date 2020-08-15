@@ -74,7 +74,8 @@ THIRD_PARTY_APPS = [
     "sorl.thumbnail",  # 显示用户头像
     "django_celery_beat",
     "taggit",
-    "markdownx"
+    "markdownx",
+    "django_comments"
 ]
 
 LOCAL_APPS = [
