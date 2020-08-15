@@ -52,6 +52,7 @@ class CreateArticleView(LoginRequiredMixin, CreateView):
         """创建成功跳转url"""
         messages.success(self.request, self.message)  # 消息传递给下一次请求
         return reverse_lazy('articles:list')
+        # return reverse('articles:list')
 
 
 class DetailArticleView(LoginRequiredMixin, DetailView):
@@ -78,4 +79,3 @@ class ArticleEditView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):
         """编辑成功后跳转"""
         messages.success(self.request, self.messages)
         return reverse("articles:article", kwargs={"slug": self.get_object().slug})
-
