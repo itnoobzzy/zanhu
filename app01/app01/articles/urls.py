@@ -12,5 +12,7 @@ urlpatterns = [
     path('', views.ArticlesListView.as_view(), name='list'),
     path('write-new-article/', views.CreateArticleView.as_view(), name='write_new'),
     path('drafts/', views.DraftsListView.as_view(), name='drafts'),
-    path('<str:slug>/', views.DetailArticleView.as_view(), name='article')
+    path('<str:slug>/', views.DetailArticleView.as_view(), name='article'),
+    path('edit/<int:pk>/', views.ArticleEditView.as_view(), name='edit_article'),
+
 ]

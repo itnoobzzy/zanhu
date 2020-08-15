@@ -7,6 +7,8 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from app01.helper import AuthorRequiredMixin
+
 from app01.articles.models import Article
 from articles.forms import ArticleForm
 
@@ -59,3 +61,21 @@ class DetailArticleView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return Article.objects.select_related('user').filter(slug=self.kwargs['slug'])
+
+
+class ArticleEditView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):
+    """文章的编辑功能"""
+    model = Article
+    messages = "您的文章编辑成功！"
+    form_class = ArticleForm
+    template_name = 'articles/article_update.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(ArticleEditView, self).form_valid(form)
+
+    def get_success_url(self):
+        """编辑成功后跳转"""
+        messages.success(self.request, self.messages)
+        return reverse("articles:article", kwargs={"slug": self.get_object().slug})
+
