@@ -4,15 +4,18 @@
 
 from django.urls import path
 
-from app01.articles import views
+from app01.qa import views
 
-app_name = 'articles'
+app_name = 'qa'
 
 urlpatterns = [
-    path('', views.ArticlesListView.as_view(), name='list'),
-    path('write-new-article/', views.CreateArticleView.as_view(), name='write_new'),
-    path('drafts/', views.DraftsListView.as_view(), name='drafts'),
-    path('<str:slug>/', views.DetailArticleView.as_view(), name='article'),
-    path('edit/<int:pk>/', views.ArticleEditView.as_view(), name='edit_article'),
-
+    path('', views.UnansweredQuestionListView.as_view(), name='unanswered_q'),
+    path('answered/', views.AnsweredQuestionListView.as_view(), name='answered_q'),
+    path('indexed/', views.QuestionListView.as_view(), name='all_q'),
+    path('ask-question/', views.CreateQuestionView.as_view(), name='ask_question'),
+    path('question-detail/<int:pk>/', views.QuestionDetailView.as_view(), name='question_detail'),
+    path('propose-answer/<int:question_id>/', views.CreateAnswerView.as_view(), name='propose_answer'),
+    path('question/vote/', views.question_vote, name='question_vote'),
+    path('answer/vote/', views.answer_vote, name='answer_vote'),
+    path('accept-answer/', views.accept_answer, name='accept_answer'),
 ]

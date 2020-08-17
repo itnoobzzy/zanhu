@@ -1,24 +1,21 @@
-# !/usr/bin/python3
+#!/usr/bin/python3
 # -*- coding:utf-8 -*-
-# __author__ = 'zzy'
+# __author__ = '__Jack__'
 
 from __future__ import unicode_literals
-
 import uuid
 from collections import Counter
 
-from django.utils \
-    .encoding import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
-from django.db import models
-from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from django.db import models
 
-from markdownx.utils import markdownify
 from slugify import slugify
-from taggit.managers import TaggableManager
 from markdownx.models import MarkdownxField
+from taggit.managers import TaggableManager
+from markdownx.utils import markdownify
 
 
 @python_2_unicode_compatible
@@ -27,11 +24,12 @@ class Vote(models.Model):
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='qa_vote',
                              on_delete=models.CASCADE, verbose_name='用户')
-    value = models.BooleanField(default=True, verbose_name='赞同或反对')
-    # 通用外键GenericForeignKey设置
+    value = models.BooleanField(default=True, verbose_name='赞同或反对')  # True赞同，False反对
+    # GenericForeignKey设置
     content_type = models.ForeignKey(ContentType, related_name='votes_on', on_delete=models.CASCADE)
     object_id = models.CharField(max_length=255)
     vote = GenericForeignKey('content_type', 'object_id')  # 等同于GenericForeignKey()
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
@@ -39,29 +37,30 @@ class Vote(models.Model):
         verbose_name = '投票'
         verbose_name_plural = verbose_name
         unique_together = ('user', 'content_type', 'object_id')  # 联合唯一键
-        # SQL 优化， 使用联合唯一索引
-        index_together = ('content_type', 'object_id')
+        # SQL优化
+        index_together = ('content_type', 'object_id')  # 联合唯一索引
 
 
 @python_2_unicode_compatible
 class QuestionQuerySet(models.query.QuerySet):
-    """自定义QuerySet, 提高模型类的可用性"""
+    """自定义QuerySet，提高模型类的可用性"""
 
     def get_answered(self):
         """已有答案的问题"""
         return self.filter(has_answer=True).select_related('user')
 
     def get_unanswered(self):
-        """未被回答的问题"""
+        """未被的回答的问题"""
         return self.filter(has_answer=False).select_related('user')
 
     def get_counted_tags(self):
-        """统计所有问题标签的数量（大于0的）"""
+        """统计所有问题标签的数量(大于0的)"""
         tag_dict = {}
         for obj in self.all():
             for tag in obj.tags.names():
                 if tag not in tag_dict:
                     tag_dict[tag] = 1
+
                 else:
                     tag_dict[tag] += 1
         return tag_dict.items()
@@ -69,19 +68,18 @@ class QuestionQuerySet(models.query.QuerySet):
 
 @python_2_unicode_compatible
 class Question(models.Model):
-    """问题模型"""
     STATUS = (("O", "Open"), ("C", "Close"), ("D", "Draft"))
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="q_author",
-                             on_delete=models.CASCADE, verbose_name="提问者")
+                             on_delete=models.CASCADE, verbose_name='提问者')
     title = models.CharField(max_length=255, unique=True, verbose_name='标题')
     slug = models.SlugField(max_length=80, null=True, blank=True, verbose_name='(URL)别名')
     status = models.CharField(max_length=1, choices=STATUS, default='O',
                               verbose_name='问题状态')
     content = MarkdownxField(verbose_name='内容')
-    tags = TaggableManager(help_text='多个标签使用，（英文）隔开', verbose_name='标签')
-    has_answer = models.BooleanField(default=False, verbose_name='接受回答')  # 是否有接受的回答
-    votes = GenericRelation(Vote, verbose_name='投票情况')  # 通过GenericRelation关联到Vote表， 不是实际的字段，models中不会显示
+    tags = TaggableManager(help_text='多个标签使用,(英文)隔开', verbose_name='标签')
+    has_answer = models.BooleanField(default=False, verbose_name="接受回答")  # 是否有接受的回答
+    votes = GenericRelation(Vote, verbose_name='投票情况')  # 通过GenericRelation关联到Vote表，不是实际的字段
     created_at = models.DateTimeField(db_index=True, auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
@@ -108,26 +106,25 @@ class Question(models.Model):
         dic = Counter(self.votes.values_list('value', flat=True))  # Counter赞同票多少，反对票少数
         return dic[True] - dic[False]
 
-    def get_answer(self):
+    def get_answers(self):
         """获取所有的回答"""
-        return Answer.objects.filter(question=self).select_related('user', 'question')  # self 作为参数,当前的问题有多少个回答
+        return Answer.objects.filter(question=self).select_related('user', 'question')  # self作为参数，当前的问题有多少个回答
 
     def count_answers(self):
         """回答的数量"""
-        return self.get_answer().count()
-
-    def get_downvoters(self):
-        """反对的用户"""
-        return [vote.user for vote in self.votes.filter(value=False).select_related('user').prefecth_related('vote')]
+        return self.get_answers().count()
 
     def get_upvoters(self):
         """赞同的用户"""
         return [vote.user for vote in self.votes.filter(value=True).select_related('user').prefecth_related('vote')]
 
+    def get_downvoters(self):
+        """反对的用户"""
+        return [vote.user for vote in self.votes.filter(value=False).select_related('user').prefecth_related('vote')]
+
 
 @python_2_unicode_compatible
 class Answer(models.Model):
-    """回答模型"""
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='a_author', on_delete=models.CASCADE,
                              verbose_name='回答者')
@@ -139,7 +136,7 @@ class Answer(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     class Meta:
-        ordering = ('-is_answer', '-created_at')
+        ordering = ('-is_answer', '-created_at')  # 多字段排序
         verbose_name = '回答'
         verbose_name_plural = verbose_name
 
@@ -151,29 +148,29 @@ class Answer(models.Model):
 
     def total_votes(self):
         """得票数"""
-        dic = Counter(self.votes.values_list('value', flat=True))  # Counter赞同票多少，反对票多少
+        dic = Counter(self.votes.values_list('value', flat=True))  # Counter赞同票多少，反对票少数
         return dic[True] - dic[False]
-
-    def get_downvoters(self):
-        """反对的用户"""
-        return [vote.user for vote in self.votes.filter(value=False).select_related('user').prefecth_related('vote')]
 
     def get_upvoters(self):
         """赞同的用户"""
         return [vote.user for vote in self.votes.filter(value=True).select_related('user').prefecth_related('vote')]
 
+    def get_downvoters(self):
+        """反对的用户"""
+        return [vote.user for vote in self.votes.filter(value=False).select_related('user').prefecth_related('vote')]
+
     def accept_answer(self):
-        """
-        接受回答
-        1. 查询所有回答，并将is_answer字段都设为False
-        2. 接受当前回答并保存：将is_answer字段设为True
-        3. 将has_answer字段设为True
-        """
-        # 当一个问题有多个回答的时候，只能采纳一个回答，其他回答一律置为未接受
-        answer_set = Answer.objects.filter(question=self.question)
-        answer_set.update(is_answer=False)
+        """接受回答"""
+        # 当一个问题有多个回答的时候，只能采纳一个回答，其它回答一律置为未接受
+        answer_set = Answer.objects.filter(question=self.question)  # 查询当前问题的所有回答
+        answer_set.update(is_answer=False)  # 一律置为未接受
+        # 接受当前回答并保存
         self.is_answer = True
         self.save()
+        # 该问题已有被接受的回答，保存
         self.question.has_answer = True
         self.question.save()
 
+# 1.需要返回查询集的逻辑写在QuerySetModel中
+# 2.模型类中数据库处理的逻辑写在Models中
+# 3.业务相关逻辑的处理写在Views中

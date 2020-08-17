@@ -4,21 +4,19 @@
 # @Author : zhouzy_a
 # @Version：V 0.1
 # @File : forms.py
-# @desc :发布文章的form表单
+# @desc :问答模块的form表单
 
 from django import forms
 
-from app01.articles.models import Article
-
 from markdownx.fields import MarkdownxFormField
 
+from app01.qa.models import Question
 
-class ArticleForm(forms.ModelForm):
+
+class QuestionForm(forms.ModelForm):
     status = forms.CharField(widget=forms.HiddenInput)
-    edited = forms.BooleanField(widget=forms.HiddenInput, required=False, initial=False)
-    image = forms.ImageField(required=False)
     content = MarkdownxFormField()
 
     class Meta:
-        model = Article
-        fields = ['title', 'content', 'image', 'tags', 'status', 'edited']
+        model = Question
+        fields = ['title', 'content', 'tags', 'status']
