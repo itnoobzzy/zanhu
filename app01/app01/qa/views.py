@@ -78,4 +78,4 @@ class ArticleEditView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):
     def get_success_url(self):
         """编辑成功后跳转"""
         messages.success(self.request, self.messages)
-        return reverse("articles:list", kwargs={"slug": self.get_object().slug})
+        return reverse("articles:article", kwargs={"slug": self.get_object().slug})
