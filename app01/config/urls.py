@@ -20,6 +20,7 @@ urlpatterns = [
                   path('news/', include('news.urls', namespace='news')),
                   path('articles/', include('app01.articles.urls', namespace='articles')),
                   path('qa/', include('app01.qa.urls', namespace='qa')),
+                  path('messages/', include('app01.messager.urls', namespace='messages')),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

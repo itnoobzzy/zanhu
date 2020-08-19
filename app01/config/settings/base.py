@@ -66,6 +66,7 @@ DJANGO_APPS = [
     "django.forms",  # 放在此列表的最后！用户后面重写django内置widget的模板
 ]
 THIRD_PARTY_APPS = [
+    # "channels",
     "crispy_forms",
     "allauth",
     "allauth.account",
@@ -82,7 +83,8 @@ LOCAL_APPS = [
     "app01.users.apps.UsersConfig",
     "app01.news.apps.NewsConfig",
     "app01.articles.apps.ArticlesConfig",
-    "app01.qa.apps.QaConfig"
+    "app01.qa.apps.QaConfig",
+    "app01.messager.apps.MessagerConfig"
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -311,3 +313,20 @@ STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# Markdown相关设置 https://neutronx.github.io/django-markdownx/customization/#settings
+MARKDOWNX_UPLOAD_MAX_SIZE = 5 * 1024 * 1024  # 允许上传的最大图片大小为5MB
+MARKDOWNX_IMAGE_MAX_SIZE = {'size': (1000, 1000), 'quality': 100}  # 图片最大为1000*1000, 不压缩
+
+# ASGI server setup
+ASGI_APPLICATION = 'config.routing.application'
+
+# 频道层的缓存
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [f'{env("REDIS_URL", default="redis://127.0.0.1:6379")}/3', ],  # channel layers缓存使用Redis 3
+        },
+    },
+}
