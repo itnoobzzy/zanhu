@@ -46,7 +46,7 @@ class Article(models.Model):
     STATUS = (("D", "Draft"), ("P", "Published"))
 
     title = models.CharField(max_length=255, unique=True, verbose_name="标题")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='author',
                              verbose_name="作者")
     image = models.ImageField(upload_to="articles_pictures/%Y/%m/%d/", verbose_name="文章图片", help_text="请上传小于900x500的图片")
     slug = models.SlugField(max_length=80, null=True, blank=True, verbose_name="(URL)别名")
