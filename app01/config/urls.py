@@ -21,6 +21,7 @@ urlpatterns = [
                   path('articles/', include('app01.articles.urls', namespace='articles')),
                   path('qa/', include('app01.qa.urls', namespace='qa')),
                   path('messages/', include('app01.messager.urls', namespace='messages')),
+                  path('notifications/', include('app01.notifications.urls', namespace='notifications')),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

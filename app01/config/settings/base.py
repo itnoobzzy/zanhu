@@ -84,7 +84,8 @@ LOCAL_APPS = [
     "app01.news.apps.NewsConfig",
     "app01.articles.apps.ArticlesConfig",
     "app01.qa.apps.QaConfig",
-    "app01.messager.apps.MessagerConfig"
+    "app01.messager.apps.MessagerConfig",
+    "app01.notifications.apps.NotificationsConfig"
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
