@@ -7,10 +7,12 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from app01.helper import AuthorRequiredMixin
+from django_comments.signals import comment_was_posted
 
+from app01.helper import AuthorRequiredMixin
 from app01.articles.models import Article
 from articles.forms import ArticleForm
+from app01.notifications.views import notification_handler
 
 
 class ArticlesListView(LoginRequiredMixin, ListView):
@@ -79,3 +81,14 @@ class ArticleEditView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):
         """编辑成功后跳转"""
         messages.success(self.request, self.messages)
         return reverse("articles:list", kwargs={"slug": self.get_object().slug})
+
+
+def notify_comment(**kwargs):
+    """文章有评论时通知作者"""
+    actor = kwargs['request'].user
+    obj = kwargs['comments'].content_object
+
+    notification_handler(actor, obj.user, 'C', obj)
+
+
+comment_was_posted.connect(receiver=notify_comment)

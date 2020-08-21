@@ -4,7 +4,7 @@ $(function () {
 
     function CheckNotifications() {
         $.ajax({
-            url: '/notifications/latest-notifications/',
+            url: '/notifications/latest-notifications',
             cache: false,
             success: function (data) {
                 if (!data.includes(emptyMessage)) {
@@ -14,10 +14,10 @@ $(function () {
         });
     }
 
-    CheckNotifications();  // 页面加载时执行
+    CheckNotifications(); // 页面加载时执行
 
     function update_social_activity(id_value) {
-        const newsToUpdate = $('[news-id=' + id_value + ']');
+        const newsToUpdate = $('[news-id=' + id_value + ']')
         $.ajax({
             url: '/news/update-interactions/',
             data: {'id_value': id_value},
@@ -26,6 +26,7 @@ $(function () {
             success: function (data) {
                 $(".like-count", newsToUpdate).text(data.likes);
                 $(".comment-count", newsToUpdate).text(data.comments);
+
             },
         });
     }
@@ -52,11 +53,11 @@ $(function () {
                 },
             });
         }
-        return false;  // 不是False
+        return false
     });
 
-    // WebSocket连接，使用wss(https)或者ws(http)
-    const ws_scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    // WebSocket连接, 使用wss(https)或者ws(http)
+    const ws_scheme = window.location.protocol === 'https:' ? 'wss' : "ws";
     const ws_path = ws_scheme + '://' + window.location.host + '/ws/notifications/';
     const ws = new ReconnectingWebSocket(ws_path);
 
@@ -65,7 +66,7 @@ $(function () {
         const data = JSON.parse(event.data);
         switch (data.key) {
             case "notification":
-                if (currentUser !== data.actor_name) {  // 消息提示的发起者不提示
+                if (currentUser !== data.actor_name) {
                     notice.addClass('btn-danger');
                 }
                 break;
@@ -87,5 +88,7 @@ $(function () {
                 console.log('error', data);
                 break;
         }
+
     };
+
 });

@@ -59,6 +59,16 @@ class Notification(models.Model):
     消息通知模型类
     参考：https://github.com/django-notifications/django-notifications
     """
+    NOTIFICATION_TYPE = (
+        ('L', '赞了'),  # like
+        ('C', '评论了'),  # comment
+        ('F', '收藏了'),  # favor
+        ('A', '回答了'),  # answer
+        ('W', '接受了回答'),  # accept
+        ('R', '回复了'),  # reply
+        ('I', '登录'),  # logged in
+        ('O', '退出'),  # logged out
+    )
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="notify_actor",
                               on_delete=models.CASCADE, verbose_name="触发者")
@@ -67,6 +77,7 @@ class Notification(models.Model):
                                   related_name="notifications", on_delete=models.CASCADE, verbose_name="接收者")
     unread = models.BooleanField(default=True, verbose_name="未读")
     slug = models.SlugField(max_length=80, null=True, blank=True, verbose_name="(URL)别名")
+    verb = models.CharField(max_length=1, choices=NOTIFICATION_TYPE, verbose_name="通知类别")
     created_at = models.DateTimeField(db_index=True, auto_now_add=True, verbose_name="创建时间")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="更新时间")
 

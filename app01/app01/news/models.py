@@ -6,8 +6,12 @@ import uuid
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-
 from django.conf import settings
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+
+from app01.notifications.views import notification_handler
 
 
 @python_2_unicode_compatible
@@ -31,8 +35,18 @@ class News(models.Model):
     def __str__(self):
         return self.content
 
-    # def save(self, *args, **kwargs):
-    #     super(News, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        super(News, self).save(*args, **kwargs)
+
+        if not self.reply:
+            channel_layer = get_channel_layer()
+            payload = {
+                "type": "receive",
+                "key": "additional_news",
+                "actor_name": self.user.username
+            }
+
+        async_to_sync(channel_layer.group_send)('notifications', payload)
 
     def switch_like(self, user):
         """点赞或取消"""
@@ -43,7 +57,8 @@ class News(models.Model):
             # 如果用户没有赞过，则添加赞
             self.liked.add(user)
             # # 通知楼主，给自己点赞时不通知
-            # if user.username != self.user.username:
+            if user.username != self.user.username:
+                notification_handler(user, self.user, 'L', self, id_value=str(self.uuid_id), key='social_update')
 
     def get_parent(self):
         """返回自关联中的上级记录或者本身"""
@@ -66,6 +81,8 @@ class News(models.Model):
             reply=True,
             parent=parent
         )
+        # 通知楼主
+        notification_handler(user, parent.user, 'R', parent, id_value=str(parent.uuid_id), key='social_update')
 
     def get_thread(self):
         """关联到当前记录的所有记录"""
@@ -83,4 +100,3 @@ class News(models.Model):
     def get_likers(self):
         """所有点赞用户"""
         return self.liked.all()
-
