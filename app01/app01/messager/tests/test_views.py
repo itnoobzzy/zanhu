@@ -6,7 +6,7 @@ from django.test import Client
 from django.urls import reverse
 from test_plus.test import TestCase
 
-from zanhu.messager.models import Message
+from app01.messager.models import Message
 
 
 class MessagesViewsTests(TestCase):

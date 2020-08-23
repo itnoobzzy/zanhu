@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
-# __author__ = '__Jack__'
+# __author__ = 'zzy'
 
 from test_plus.test import TestCase
 
-from zanhu.news.models import News
-from zanhu.notifications.models import Notification
-from zanhu.notifications.views import notification_handler
+from app01.news.models import News
+from app01.notifications.models import Notification
+from app01.notifications.views import notification_handler
 
 
 class NotificationsModelsTest(TestCase):

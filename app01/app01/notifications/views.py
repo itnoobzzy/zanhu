@@ -81,6 +81,7 @@ def notification_handler(actor, recipient, verb, action_object, **kwargs):
         verb=verb,
         action_object=action_object
     )
+
     channel_layer = get_channel_layer()
     payload = {
         'type': 'receive',

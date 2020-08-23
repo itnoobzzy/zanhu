@@ -4,7 +4,7 @@
 
 from test_plus.test import TestCase
 
-from zanhu.messager.models import Message
+from app01.messager.models import Message
 
 
 class MessagesModelsTest(TestCase):

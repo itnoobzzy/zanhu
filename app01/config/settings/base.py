@@ -66,7 +66,7 @@ DJANGO_APPS = [
     "django.forms",  # 放在此列表的最后！用户后面重写django内置widget的模板
 ]
 THIRD_PARTY_APPS = [
-    # "channels",
+    "channels",
     "crispy_forms",
     "allauth",
     "allauth.account",

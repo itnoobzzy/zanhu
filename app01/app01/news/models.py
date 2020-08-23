@@ -46,7 +46,7 @@ class News(models.Model):
                 "actor_name": self.user.username
             }
 
-        async_to_sync(channel_layer.group_send)('notifications', payload)
+            async_to_sync(channel_layer.group_send)('notifications', payload)
 
     def switch_like(self, user):
         """点赞或取消"""

@@ -6,7 +6,7 @@ from django.test import Client
 from django.urls import reverse
 from test_plus.test import TestCase
 
-from zanhu.notifications.models import Notification
+from app01.notifications.models import Notification
 
 
 class NotificationsViewsTest(TestCase):

@@ -14,6 +14,7 @@ from django.views.generic import CreateView, ListView, DetailView
 from app01.helper import ajax_required
 from app01.qa.models import Question, Answer
 from app01.qa.forms import QuestionForm
+from app01.notifications.views import notification_handler
 
 
 class QuestionListView(LoginRequiredMixin, ListView):
@@ -155,4 +156,5 @@ def accept_answer(request):
         raise PermissionDenied
     answer.accept_answer()
     # 通知回答者
-    return JsonResponse({'status': 'true'})
+    notification_handler(request.user, answer.user, 'W', answer)
+    return JsonResponse({'status': 'true'}, status=200)

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
-# __author__ = '__Jack__'
+# __author__ = 'zzy'
 
 from django.apps import AppConfig
 
