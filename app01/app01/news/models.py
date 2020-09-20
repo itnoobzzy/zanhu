@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import uuid
 
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
+# from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
 
 from asgiref.sync import async_to_sync
@@ -14,7 +14,7 @@ from channels.layers import get_channel_layer
 from app01.notifications.views import notification_handler
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class News(models.Model):
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL,

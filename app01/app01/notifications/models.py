@@ -6,7 +6,7 @@
 from __future__ import unicode_literals
 import uuid
 
-from django.utils.encoding import python_2_unicode_compatible
+# from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -16,7 +16,7 @@ from django.core import serializers
 from slugify import slugify
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class NotificationQuerySet(models.query.QuerySet):
 
     def unread(self):
@@ -53,7 +53,7 @@ class NotificationQuerySet(models.query.QuerySet):
         return notification_dic
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class Notification(models.Model):
     """参考：https://github.com/django-notifications/django-notifications"""
     NOTIFICATION_TYPE = (

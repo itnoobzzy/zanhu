@@ -10,6 +10,8 @@ ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = ROOT_DIR / "app01"
 env = environ.Env()
 
+SECRET_KEY = "uADQTmViKcPB67CkWZQgVlUPcVBtPceubIDKqzkd3HacDyXMTAXxQifmF7PdNEhd"
+
 READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=True)
 if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
@@ -42,7 +44,7 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-    "default": env.db("DATABASE_URL", default="mysql://zanhu")
+    "default": env.db("DATABASE_URL", default="mysql://zzy")
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
@@ -76,7 +78,8 @@ THIRD_PARTY_APPS = [
     "django_celery_beat",
     "taggit",
     "markdownx",
-    "django_comments"
+    "django_comments",
+    "djcelery_email"
 ]
 
 LOCAL_APPS = [
@@ -85,7 +88,7 @@ LOCAL_APPS = [
     "app01.articles.apps.ArticlesConfig",
     "app01.qa.apps.QaConfig",
     "app01.messager.apps.MessagerConfig",
-    "app01.notifications.apps.NotificationsConfig"
+    "app01.notifications.apps.NotificationsConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -109,7 +112,8 @@ AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 LOGIN_REDIRECT_URL = "account_logout"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-LOGIN_URL = "account_login"
+LOGIN_URL = "news:list"
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # PASSWORDS
 # ------------------------------------------------------------------------------
@@ -331,3 +335,16 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        # 使用的Elasticsearch搜索引擎
+        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+        # Elasticsearch连接的地址
+        'URL': 'http://127.0.0.1:9200/',
+        # 默认的索引名
+        'INDEX_NAME': 'zanhu',
+    }
+}
+
+HAYSTACK_SEARCH_RESULTS_PRE_PAGE = 20

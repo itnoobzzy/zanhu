@@ -4,8 +4,8 @@
 
 from __future__ import unicode_literals
 
-from django.utils \
-    .encoding import python_2_unicode_compatible
+# from django.utils \
+    # .encoding import python_2_unicode_compatible
 from django.conf import settings
 from django.db import models
 from django.db.models import Count
@@ -15,8 +15,8 @@ from slugify import slugify
 from taggit.managers import TaggableManager
 from markdownx.models import MarkdownxField
 
-
-@python_2_unicode_compatible
+from django.contrib.contenttypes.models import ContentType
+# @python_2_unicode_compatible
 class ArticleQuerySet(models.query.QuerySet):
     """自定义QuerySet, 提高模型类的可用性"""
 
@@ -41,7 +41,7 @@ class ArticleQuerySet(models.query.QuerySet):
         return tag_dict.items()
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class Article(models.Model):
     STATUS = (("D", "Draft"), ("P", "Published"))
 

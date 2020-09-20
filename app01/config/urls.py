@@ -17,7 +17,7 @@ urlpatterns = [
                   path('comments/', include('django_comments.urls')),
 
                   # 开发的应用
-                  path('news/', include('news.urls', namespace='news')),
+                  path('news/', include('app01.news.urls', namespace='news')),
                   path('articles/', include('app01.articles.urls', namespace='articles')),
                   path('qa/', include('app01.qa.urls', namespace='qa')),
                   path('messages/', include('app01.messager.urls', namespace='messages')),

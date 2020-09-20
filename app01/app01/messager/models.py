@@ -6,13 +6,13 @@
 from __future__ import unicode_literals
 import uuid
 
-from django.utils.encoding import python_2_unicode_compatible
+# from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class MessageQuerySet(models.query.QuerySet):
     """私信查询集"""
 
@@ -50,7 +50,7 @@ class MessageQuerySet(models.query.QuerySet):
             return get_user_model().objects.get(username=recipient.username)
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class Message(models.Model):
     """私信模型类"""
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

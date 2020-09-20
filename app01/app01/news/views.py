@@ -21,7 +21,7 @@ class NewsListView(LoginRequiredMixin, ListView):
     template_name = 'news/news_list.html'
 
     def get_queryset(self, *args, **kwargs):
-        return News.objects.filter(reply=False)
+        return News.objects.filter(reply=False).select_related('user', 'parent').prefetch_related('liked')
 
 
 class NewsDeleteView(LoginRequiredMixin, AuthorRequiredMixin, DeleteView):

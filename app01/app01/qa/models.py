@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import uuid
 from collections import Counter
 
-from django.utils.encoding import python_2_unicode_compatible
+# from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
@@ -18,7 +18,7 @@ from taggit.managers import TaggableManager
 from markdownx.utils import markdownify
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class Vote(models.Model):
     """使用Django中的ContentType, 同时关联用户对问题和回答的投票"""
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -41,7 +41,7 @@ class Vote(models.Model):
         index_together = ('content_type', 'object_id')  # 联合唯一索引
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class QuestionQuerySet(models.query.QuerySet):
     """自定义QuerySet，提高模型类的可用性"""
 
@@ -66,7 +66,7 @@ class QuestionQuerySet(models.query.QuerySet):
         return tag_dict.items()
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class Question(models.Model):
     STATUS = (("O", "Open"), ("C", "Close"), ("D", "Draft"))
 
@@ -123,7 +123,7 @@ class Question(models.Model):
         return [vote.user for vote in self.votes.filter(value=False).select_related('user').prefecth_related('vote')]
 
 
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 class Answer(models.Model):
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='a_author', on_delete=models.CASCADE,

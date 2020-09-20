@@ -6,12 +6,14 @@ from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from django_comments.signals import comment_was_posted
 
 from app01.helper import AuthorRequiredMixin
 from app01.articles.models import Article
-from articles.forms import ArticleForm
+from app01.articles.forms import ArticleForm
 from app01.notifications.views import notification_handler
 
 
@@ -39,6 +41,7 @@ class DraftsListView(ArticlesListView):
         return Article.objects.filter(user=self.request.user).get_drafts()
 
 
+@method_decorator(cache_page(60 * 60), name='get')
 class CreateArticleView(LoginRequiredMixin, CreateView):
     """发表文章"""
     model = Article
@@ -80,7 +83,8 @@ class ArticleEditView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):
     def get_success_url(self):
         """编辑成功后跳转"""
         messages.success(self.request, self.messages)
-        return reverse("articles:list", kwargs={"slug": self.get_object().slug})
+        # return reverse("articles:list", kwargs={"slug": self.get_object().slug})
+        return reverse("articles:list")
 
 
 def notify_comment(**kwargs):
